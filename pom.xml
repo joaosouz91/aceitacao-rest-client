@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>br.com.tokiomarine.aceitacao.rest.client</groupId>
+	<artifactId>aceitacao-rest-client</artifactId>
+	<version>0.0.8</version>
+	<packaging>jar</packaging>
+	<name>aceitacao-rest-client</name>
+	<description>Aceitacao Rest Client</description>
+	<developers>
+		<developer>
+			<id>E105892</id>
+			<name>Leonardo Amaral</name>
+			<email>leonardo.amaral@tokiomarine.com.br</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+		</developer>
+	</developers>
+	
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.0.RELEASE</version>
+		<relativePath/> <!--   lookup parent from repository -->
+	</parent>
+
+	<properties>
+        <name>${project.name}</name>
+        <groupId>${project.groupId}</groupId>
+        <artifactId>${project.artifactId}</artifactId>
+        <version>${project.version}</version>	
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		    <exclusions>
+<!-- 		        <exclusion> -->
+<!-- 		          <groupId>org.springframework.boot</groupId> -->
+<!-- 		          <artifactId>spring-boot-starter-tomcat</artifactId> -->
+<!-- 		        </exclusion> -->
+			    <exclusion>
+		            <groupId>org.springframework.boot</groupId>
+		            <artifactId>spring-boot-starter-logging</artifactId>
+		        </exclusion>		        
+		    </exclusions>				
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>1.7.21</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+			<version>1.0.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>1.17.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-json</artifactId>
+			<version>1.17.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.5</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>br.com.tokiomarine.seguradora.ssv</groupId>
+			<artifactId>PersistenciaBaseUnificadaCRUD-client</artifactId>	
+			<scope>compile</scope>		
+			<version>93.01</version>
+
+ 			<exclusions>
+              <exclusion>
+                <groupId>javax.persistence</groupId>
+                <artifactId>persistence-api</artifactId>
+              </exclusion>
+            </exclusions>			
+		</dependency>		
+		
+		<dependency>
+			<groupId>br.com.tokiomarine.seguradora</groupId>
+			<artifactId>tms_core_framework</artifactId>
+			<version>7.8</version>
+			<scope>compile</scope>
+		</dependency>	
+		
+		
+		<dependency>
+			<groupId>br.com.tokiomarine.seguradora.aceitacao</groupId>
+			<artifactId>AceitacaoCRUD-client</artifactId>
+			<version>1.20.0</version>
+		</dependency>		
+		
+		<dependency>
+			<groupId>br.com.tokiomarine.seguradora.ssv</groupId>
+			<artifactId>CorporativoUtilDTO</artifactId>
+			<version>2.0-SNAPSHOT</version>
+		</dependency>		
+		
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+			<scope>provided</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>commons-dbcp</groupId>
+		    <artifactId>commons-dbcp</artifactId>
+		    <version>1.2.2</version>
+		    <scope>test</scope>
+		</dependency>		
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		</dependency>		
+	</dependencies>
+
+	<build>
+		<plugins>
+		      <plugin>
+		        <groupId>org.apache.maven.plugins</groupId>
+		          <artifactId>maven-compiler-plugin</artifactId>
+		          <configuration>
+		             <finalName>${project.artifactId}-${project.version}</finalName>
+		             <source>1.8</source>
+		             <target>1.8</target>
+		             <encoding>UTF-8</encoding>
+		           </configuration>
+		      </plugin>
+		</plugins>
+	</build>
+</project>

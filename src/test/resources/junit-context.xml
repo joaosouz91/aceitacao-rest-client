@@ -1,0 +1,152 @@
+<beans
+ 	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.2.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+        http://www.directwebremoting.org/schema/spring-dwr
+    	http://www.directwebremoting.org/schema/spring-dwr-3.0.xsd
+    	http://www.springframework.org/schema/task
+    	http://www.springframework.org/schema/task/spring-task.xsd
+    	">
+
+    <!-- Spring should auto load this bean -->
+ 	<context:component-scan base-package="br.com.tokiomarine" >
+ 	  <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+ 	</context:component-scan>
+
+  
+  <bean id="atribuirPrestadorAssync" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+    <property name="corePoolSize" value="2"/>
+    <property name="maxPoolSize" value="10"/>
+    <property name="queueCapacity" value="300"/>
+    <property name="keepAliveSeconds" value="300"/>
+  </bean>
+    
+  <mvc:annotation-driven> 
+    <mvc:async-support default-timeout="30000" task-executor="atribuirPrestadorAssync"/>
+  </mvc:annotation-driven>
+  
+
+
+<!--     <bean id="dsDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close"> -->
+<!-- 		<property name="driverClassName" value="oracle.jdbc.pool.OracleConnectionPoolDataSource"/> -->
+<!--         <property name="url" value="jdbc:oracle:thin:@srvrac001a.tokiomarine.com.br:1525:ptma1"/> -->
+<!--         <property name="username" value="E105892"/> -->
+<!--         <property name="password" value="tokio12345"/> -->
+<!--     </bean> -->
+
+<!--     <bean id="dsDataSource" class="org.apache.commons.dbcp.BasicDataSource"> -->
+<!-- 	        <property name="driverClassName" value="oracle.jdbc.pool.OracleConnectionPoolDataSource"/> -->
+<!-- 	        <property name="url" value="jdbc:oracle:thin:@srvrac001a.tokiomarine.com.br:1525:ptma1"/> -->
+<!-- 	        <property name="minIdle" value="5"/> -->
+<!-- 	        <property name="maxIdle" value="20"/> -->
+<!-- 	        <property name="maxOpenPreparedStatements" value="180"/> -->
+<!-- 	        <property name="username" value="T801426"/> -->
+<!-- 	        <property name="password" value="tokio12345"/>	       -->
+<!--     </bean> -->
+
+    <bean id="dsDataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	        <property name="driverClassName" value="oracle.jdbc.pool.OracleConnectionPoolDataSource"/>
+	        <property name="url" value="jdbc:oracle:thin:@srvdpxodb03a:1527:ssvm"/>
+	        <property name="minIdle" value="5"/>
+	        <property name="maxIdle" value="20"/>
+	        <property name="maxOpenPreparedStatements" value="180"/>
+	        <property name="username" value="SSVOC4J"/>
+	        <property name="password" value="octkm4jssv"/>	      
+    </bean>
+    
+
+	<bean id="customFormatExpressions"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="customFormatExpressions" />
+		<property name="fallbackToSystemLocale" value="false" />
+	</bean>
+
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basename" value="messages" />
+		<property name="fallbackToSystemLocale" value="false" />
+	</bean>
+
+	<bean id="tmSessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dsDataSource" />
+
+		<property name="configLocation">
+			<value>classpath:hibernate.cfg.xml</value>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider
+				</prop>
+
+				<prop key="hibernate.cache.use_second_level_cache">true</prop>
+				<prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+
+				<prop key="hibernate.c3p0.acquire_increment">1</prop>
+				<prop key="hibernate.c3p0.idle_test_period">300</prop>
+				<prop key="hibernate.c3p0.timeout">5000</prop>
+				<prop key="hibernate.c3p0.max_size">10</prop>
+				<prop key="hibernate.c3p0.max_statements">0</prop>
+				<prop key="hibernate.c3p0.min_size">1</prop>
+				<prop key="hibernate.c3p0.acquireRetryAttempts">3</prop>
+				<prop key="hibernate.c3p0.acquireRetryDelay">1000</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+			</props>
+		</property>
+		<property name="packagesToScan"
+			value="br.com.tokiomarine.corporativo.inspecao.inteligente.domain" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="tmSessionFactory" />
+	</bean>
+
+	<bean class="org.springframework.beans.factory.config.CustomScopeConfigurer">
+        <property name="scopes">
+            <map>
+                <entry key="session">
+                    <bean class="org.springframework.context.support.SimpleThreadScope"/>
+                </entry>
+                <entry key="request">
+                    <bean class="org.springframework.web.context.request.RequestScope" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+   <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+	   <constructor-arg>
+	
+	      <bean class="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+	        <property name="connectTimeout" value="5000" />
+	       	<property name="readTimeout" value="5000" />	       	
+	      </bean>
+	      
+	    </constructor-arg>
+	    
+		<property name="messageConverters">
+		    <list>
+		        <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+		        <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+		        <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+		        <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>		        
+		    </list>
+		</property>		    
+   </bean>
+	<tx:annotation-driven transaction-manager="transactionManager" />
+</beans>
